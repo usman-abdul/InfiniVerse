@@ -47,23 +47,46 @@ npm run dev
 ## Project structure
 
 ```
-backend/
-  app/
-    main.py          # FastAPI app, CORS, static file mount
-    db.py             # Async SQLAlchemy engine/session
-    models.py          # Room / Upload ORM models
-    routers/
-      ws.py            # WebSocket relay (/ws/{room_id})
-      rooms.py          # Room creation, lookup, history
-      uploads.py         # Image/audio upload endpoint
-frontend/
-  src/
-    Canvas.jsx          # Main drawing surface (Konva)
-    useYjsRoom.js        # CRDT sync + IndexedDB offline cache
-    usePhysics.js         # Throw/collision/merge physics
-    TimeTravel.jsx        # History replay modal
-    MiniMap.jsx           # Live viewport overview
-    ...
+backend/                    # FastAPI + Postgres service
+├── Dockerfile                 # Backend container build
+├── requirements.txt            # Pinned runtime dependencies
+├── test_smoke.py               # In-memory SQLite smoke tests
+├── test_rest_smoke.py           # REST endpoint smoke tests
+└── app/
+    ├── main.py                  # FastAPI entrypoint - CORS, static /uploads mount
+    ├── db.py                     # Async SQLAlchemy engine/session setup
+    ├── models.py                  # Room + Upload ORM models
+    ├── schemas.py                  # Pydantic response schemas
+    ├── ws_manager.py                # Per-room connection registry + update history
+    └── routers/
+        ├── ws.py                      # WS /ws/{room_id} - the realtime relay
+        ├── rooms.py                    # Room create/lookup, GET history
+        └── uploads.py                   # POST /rooms/{id}/uploads - images + audio
+
+frontend/                   # React + Vite + Konva client
+├── index.html
+├── vite.config.js
+└── src/
+    ├── Canvas.jsx                # Main drawing surface - shapes, pan/zoom, render
+    ├── useYjsRoom.js              # CRDT sync (Yjs) + IndexedDB offline cache
+    ├── usePhysics.js               # Throw / collision / merge physics engine
+    ├── TimeTravel.jsx               # Full-history replay modal
+    ├── MiniMap.jsx                   # Live viewport overview + peer presence
+    ├── StylePanel.jsx                 # Shape properties panel (color, rotation, ...)
+    ├── Toolbar.jsx                     # Tool switcher + Shapes/Physics flyouts
+    ├── Room.jsx                         # Room screen - header, layout, connection state
+    ├── RoomEntry.jsx                     # Join/create room form
+    ├── Onboarding.jsx                     # First-visit tips overlay
+    ├── Splash.jsx                          # Landing screen with animated starfield
+    ├── api.js                               # REST client - rooms, uploads, history
+    ├── useHtmlImage.js                       # Image element loader hook for Konva
+    └── styles.css                             # Global styles
+
+docs/
+└── ENGINEERING_NOTES.md    # Full build log - every part, decision, and bug fix
+
+docker-compose.yml         # Backend + Postgres services for local dev
+.env.example               # DATABASE_URL template
 ```
 
 ## Known limitations
