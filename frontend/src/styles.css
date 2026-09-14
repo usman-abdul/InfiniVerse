@@ -1,0 +1,1343 @@
+:root {
+  --paper: #faf9f6;
+  --ink: #2b2b2e;
+  --ink-soft: #6b6a67;
+  --line: #e2e0da;
+  --accent: #2f6f6b;
+  --accent-bad: #c1502e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input {
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Splash */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 1000;
+  opacity: 1;
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+
+.splash.fading {
+  opacity: 0;
+}
+
+.splash-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.splash-star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: var(--star-opacity);
+  animation-name: splash-star-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes splash-star-twinkle {
+  0%,
+  100% {
+    opacity: var(--star-opacity);
+  }
+  50% {
+    opacity: calc(var(--star-opacity) * 0.25);
+  }
+}
+
+/* Real content needs its own stacking context above the star layer -
+   a position:absolute z-index:0 sibling paints above plain
+   static-position content per CSS stacking rules, so without this the
+   stars would incorrectly cover the text and shapes. */
+.splash-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.splash-shape {
+  fill: none;
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: splash-draw 1s ease forwards;
+}
+
+.splash-shape-1 {
+  animation-delay: 0.2s;
+}
+
+.splash-shape-2 {
+  animation-delay: 0.9s;
+}
+
+.splash-shape-3 {
+  animation-delay: 1.6s;
+}
+
+@keyframes splash-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.splash-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 60px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 6px 0 0;
+  letter-spacing: -0.01em;
+}
+
+.splash-tagline {
+  font-size: 19px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.splash-loading-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.splash-loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: splash-dot-pulse 1.2s ease-in-out infinite;
+}
+
+.splash-loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.splash-loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.splash-skip-hint {
+  font-size: 12px;
+  color: var(--ink-soft);
+  opacity: 0.4;
+  margin: 2px 0 0;
+  transition: opacity 0.2s ease;
+}
+
+.splash:hover .splash-skip-hint {
+  opacity: 0.75;
+}
+
+@keyframes splash-dot-pulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Entry screen */
+
+.entry {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.entry-card {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(43, 43, 46, 0.06);
+}
+
+.eyebrow {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 8px;
+}
+
+.entry-card h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 24px;
+}
+
+.entry-invite-hint {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: -16px 0 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.field span {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+input {
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.entry-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 520px) {
+  .entry-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.entry-section h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: var(--ink-soft);
+}
+
+.entry-section input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+button.primary,
+.entry-section button {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+button.primary:hover,
+.entry-section button.primary:hover {
+  box-shadow: 0 4px 14px rgba(43, 43, 46, 0.18);
+  transform: translateY(-1px);
+}
+
+button.primary:active,
+.entry-section button.primary:active {
+  transform: translateY(0);
+}
+
+.entry-section button:not(.primary) {
+  background: transparent;
+  color: var(--ink);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  margin-top: 16px;
+  color: var(--accent-bad);
+  font-size: 13px;
+}
+
+/* Room view */
+
+.room {
+  height: 100%;
+}
+
+.room-bar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+  box-shadow: 0 1px 8px rgba(43, 43, 46, 0.04);
+  position: relative;
+  z-index: 5;
+  /* This row has grown a lot over the course of building this app
+     (user tag, Leave, room name, Copy ID, Export, Time Travel, peer
+     count) - on a narrow phone it no longer fits, and without this it
+     would either clip content or force page-wide horizontal scroll.
+     Scrolls within itself instead. */
+  overflow-x: auto;
+}
+
+.room-bar > * {
+  flex-shrink: 0;
+}
+
+.ghost {
+  background: none;
+  border: none;
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.ghost:hover {
+  background: var(--paper);
+}
+
+.room-bar .ghost {
+  background: none;
+  border: none;
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.room-bar .ghost:hover {
+  background: var(--paper);
+}
+
+.room-bar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+}
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: var(--paper);
+}
+
+.copy-btn.copied {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-bad);
+  transition: background-color 0.25s ease;
+}
+
+.status-dot.ok {
+  background: var(--accent);
+}
+
+.room-name-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.room-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.current-user-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 140px;
+}
+
+.user-avatar {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.peer-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.room {
+  position: relative;
+}
+
+.toolbar {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 6px 20px rgba(43, 43, 46, 0.1);
+  z-index: 10;
+  /* Wraps onto a second row on narrow screens rather than scrolling
+     horizontally - deliberately NOT overflow-x:auto here: setting
+     overflow on one axis forces the other axis to clip too (a real
+     CSS rule, not a quirk), which would cut off the Shapes flyout
+     dropdown below, since that needs to escape upward past this
+     box's own edge. Wrapping avoids the conflict entirely, and is
+     arguably better on mobile anyway - nothing hidden behind a
+     scroll a person has to discover. */
+  max-width: calc(100vw - 24px);
+}
+
+.tool-btn {
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 13px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.tool-btn:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.tool-btn:active {
+  transform: scale(0.94);
+}
+
+.tool-btn.active {
+  background: var(--ink);
+  color: #fff;
+}
+
+.tool-btn.active:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.flyout-menu {
+  position: relative;
+}
+
+.flyout-dropdown {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 8px 24px rgba(43, 43, 46, 0.14);
+  z-index: 11;
+}
+
+.inline-text-editor {
+  position: absolute;
+  z-index: 20;
+  min-width: 80px;
+  min-height: 1.3em;
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  background: transparent;
+  color: var(--ink);
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.3;
+  resize: none;
+  overflow: hidden;
+  white-space: pre;
+}
+
+.inline-text-editor.sticky {
+  outline: 2px solid rgba(0, 0, 0, 0.15);
+  outline-offset: -2px;
+  padding: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 480px) {
+  .room-bar {
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .copy-btn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .room-bar .ghost {
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  /* The username text is redundant with the avatar tag's own hover
+     tooltip at this width - the avatar alone is enough signal, and
+     dropping the text is what buys back room for "Copy ID" and peer
+     count, same reasoning that used to apply to the old text label
+     next to the connection dot. */
+  .user-name {
+    display: none;
+  }
+
+  .peer-count {
+    font-size: 12px;
+  }
+
+  .toolbar {
+    bottom: 16px;
+    gap: 2px;
+    padding: 4px;
+    max-width: calc(100vw - 24px);
+  }
+
+  .tool-btn {
+    padding: 8px;
+  }
+
+  .tool-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.audio-recording-pill {
+  position: absolute;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(43, 43, 46, 0.25);
+}
+
+.rec-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-bad);
+  animation: rec-pulse 1s ease-in-out infinite;
+}
+
+@keyframes rec-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.sticky-swatches {
+  position: absolute;
+  z-index: 21;
+  display: flex;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 14px rgba(43, 43, 46, 0.12);
+}
+
+.sticky-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.sticky-swatch:hover {
+  transform: scale(1.1);
+}
+
+.sticky-swatch.selected {
+  border-color: var(--ink);
+}
+
+.export-menu {
+  position: relative;
+}
+
+.export-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 4px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(43, 43, 46, 0.14);
+  z-index: 30;
+}
+
+.export-dropdown button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.export-dropdown button:hover {
+  background: var(--paper);
+}
+
+.download-picker-bar {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  padding: 8px 10px 8px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(43, 43, 46, 0.25);
+  z-index: 15;
+}
+
+.download-picker-clear,
+.download-picker-download {
+  border: none;
+  border-radius: 14px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.download-picker-clear {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.download-picker-clear:hover {
+  color: #fff;
+}
+
+.download-picker-download {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 500;
+}
+
+.download-picker-download:hover {
+  background: #285e5b;
+}
+
+.upload-error {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid var(--accent-bad);
+  color: var(--accent-bad);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+/* Mini-map */
+
+.minimap {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+.minimap.solo {
+  opacity: 0.5;
+}
+
+/* Sized to match the PANEL_WIDTH/PANEL_HEIGHT constants in
+   MiniMap.jsx. Overflow is deliberately visible (not hidden) here,
+   even though that's the rounded/shadowed "panel" look - a hidden
+   peer tooltip needs to be able to pop out past this box's edges. */
+.minimap-surface {
+  position: relative;
+  width: 180px;
+  height: 140px;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(43, 43, 46, 0.18);
+}
+
+.minimap-bg {
+  fill: rgba(32, 32, 31, 0.92);
+}
+
+.minimap-shape {
+  fill: rgba(255, 255, 255, 0.55);
+}
+
+.minimap-own-viewport {
+  fill: rgba(232, 93, 4, 0.18);
+  stroke: var(--accent-bad);
+  stroke-width: 1.5;
+}
+
+.minimap-peers {
+  position: absolute;
+  inset: 0;
+}
+
+.minimap-peer-avatar {
+  position: absolute;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.minimap-peer-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #20201f;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .minimap {
+    bottom: 84px;
+    right: 10px;
+    transform: scale(0.85);
+    transform-origin: bottom right;
+  }
+}
+
+/* Join notifications */
+
+.join-toasts {
+  position: absolute;
+  top: 72px;
+  right: 16px;
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.join-toast {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(43, 43, 46, 0.12);
+  animation: join-toast-in 0.2s ease, join-toast-out 0.3s ease 3.7s forwards;
+}
+
+@keyframes join-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes join-toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* Time Travel */
+
+.time-travel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 43, 46, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.time-travel-modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(43, 43, 46, 0.3);
+  padding: 20px;
+  max-width: 95vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.time-travel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time-travel-header h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.time-travel-status {
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding: 40px 20px;
+  max-width: 360px;
+  text-align: center;
+}
+
+.time-travel-canvas-wrap {
+  background: #faf9f6;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.time-travel-canvas-wrap:active {
+  cursor: grabbing;
+}
+
+.time-travel-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.time-travel-controls .ghost {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.time-travel-speed {
+  min-width: 42px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-travel-scrubber {
+  flex: 1;
+  min-width: 120px;
+  accent-color: var(--accent);
+}
+
+.time-travel-timestamp {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  min-width: 76px;
+  text-align: right;
+}
+
+.time-travel-step-count {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .time-travel-modal {
+    padding: 14px;
+  }
+
+  .time-travel-header h2 {
+    font-size: 16px;
+  }
+}
+
+/* Style panel */
+
+.style-panel {
+  position: fixed;
+  top: 56px; /* below the room header - matches Canvas.jsx's HEADER_HEIGHT */
+  bottom: 0;
+  left: 0;
+  width: 240px;
+  background: #fff;
+  border-right: 1px solid var(--line);
+  box-shadow: 4px 0 20px rgba(43, 43, 46, 0.08);
+  padding: 18px 16px;
+  z-index: 25;
+  overflow-y: auto;
+  /* Fully off-screen and non-interactive by default - this is what
+     keeps it from "sticking out" before a shape is selected. Kept
+     permanently mounted (see StylePanel.jsx's own comment) so both
+     the slide-in AND slide-out can actually animate. */
+  transform: translateX(-100%);
+  pointer-events: none;
+  transition: transform 0.22s ease;
+}
+
+.style-panel.open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+@media (min-width: 641px) {
+  .style-panel.anchor-right {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--line);
+    box-shadow: -4px 0 20px rgba(43, 43, 46, 0.08);
+    transform: translateX(100%);
+  }
+
+  .style-panel.anchor-right.open {
+    transform: translateX(0);
+  }
+}
+
+.style-panel-header {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.style-panel-section {
+  margin-bottom: 18px;
+}
+
+.style-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.style-slider-row input[type="range"] {
+  flex: 1;
+}
+
+.style-number-input {
+  width: 48px;
+  flex-shrink: 0;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12.5px;
+  text-align: center;
+  color: var(--ink);
+}
+
+.style-panel-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.style-panel-unit {
+  color: var(--ink-soft);
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.style-panel-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.style-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  padding: 0;
+}
+
+.style-swatch.selected {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--accent);
+}
+
+.style-swatch-custom {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1.5px dashed var(--accent);
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  background: none;
+}
+
+.style-swatch-custom-wrapper {
+  position: relative;
+  width: 22px;
+  height: 22px;
+}
+
+.style-swatch-custom-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1.5px solid #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.style-swatch-custom::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.style-swatch-custom::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.style-panel-delete {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-bad);
+  background: none;
+  color: var(--accent-bad);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.style-panel-delete:hover {
+  background: var(--accent-bad);
+  color: #fff;
+}
+
+.style-font-select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.style-panel-button-row {
+  display: flex;
+  gap: 6px;
+}
+
+.style-toggle-btn {
+  flex: 1;
+  padding: 6px 0;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.style-toggle-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.style-panel-action {
+  flex: 1;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.style-panel-action:hover {
+  background: var(--paper);
+}
+
+@media (max-width: 640px) {
+  .style-panel {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    max-height: 45vh;
+    border-right: none;
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -4px 20px rgba(43, 43, 46, 0.1);
+    border-radius: 14px 14px 0 0;
+    transform: translateY(100%);
+  }
+
+  .style-panel.open {
+    transform: translateY(0);
+  }
+}
+
+
+
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 43, 46, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 20px;
+}
+
+.onboarding-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(43, 43, 46, 0.3);
+  padding: 28px;
+  max-width: 440px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.onboarding-card h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+
+.onboarding-tips {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.onboarding-tips li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.onboarding-tip-number {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.onboarding-tips strong {
+  display: block;
+  font-size: 14.5px;
+  margin-bottom: 3px;
+}
+
+.onboarding-tips p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.onboarding-dismiss {
+  width: 100%;
+}
